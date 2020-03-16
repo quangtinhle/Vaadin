@@ -1,2 +1,8 @@
 org\example\MyUI.class
+org\example\entities\Candidate.class
 org\example\MyUI$MyUIServlet.class
+org\example\service\CandidateService$1.class
+org\example\content\Datalist.class
+org\example\entities\CandidateStatus.class
+org\example\content\CandidateForm.class
+org\example\service\CandidateService.class

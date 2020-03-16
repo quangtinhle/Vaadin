@@ -20,14 +20,14 @@ public class Datalist extends VerticalLayout {
         candidateForm = new CandidateForm(this);
         addComponents(grid, candidateForm);
 
-        grid.setColumns("fristName","lastName");
+        grid.setColumns("firstName","lastName","birthDate","email","status" );
         candidateForm.setCandidate(null);
         grid.asSingleSelect().addValueChangeListener(e -> candidateForm.setCandidate(grid.asSingleSelect().getValue()));
         updateList(service.findAll());
     }
 
     public void updateList(ArrayList<Candidate> candidates) {
-        System.out.println(new Gson().toJson(candidates));
+        //System.out.println(new Gson().toJson(candidates));
         grid.setItems(candidates);
     }
 }

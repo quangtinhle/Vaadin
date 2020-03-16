@@ -10,7 +10,7 @@ public class Candidate {
     private String address;
     private LocalDate birthDate;
     private String email;
-    private String status;
+    private CandidateStatus status;
 
     public String getId() {
         return id;
@@ -60,11 +60,15 @@ public class Candidate {
         this.email = email;
     }
 
-    public String getStatus() {
+    public CandidateStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CandidateStatus status) {
         this.status = status;
+    }
+
+    public boolean isPersisted() {
+        return id != null;
     }
 }

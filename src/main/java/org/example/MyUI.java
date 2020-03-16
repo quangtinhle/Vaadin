@@ -6,11 +6,17 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import org.example.content.CandidateForm;
+import org.example.content.Datalist;
+import org.example.entities.Candidate;
+import org.example.service.CandidateService;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
@@ -22,20 +28,29 @@ import com.vaadin.ui.VerticalLayout;
 @Theme("mytheme")
 public class MyUI extends UI {
 
+    private CandidateService service = CandidateService.getInstance();
+    private Datalist datalist;
+    private CandidateForm candidateForm;
+
+    public MyUI() throws IOException {
+    }
+
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
-        
-        final TextField name = new TextField();
-        name.setCaption("Type your name here:");
 
-        Button button = new Button("Click Me");
-        button.addClickListener(e -> {
-            layout.addComponent(new Label("Thanks " + name.getValue() 
-                    + ", it works!"));
-        });
-        
-        layout.addComponents(name, button);
+        try {
+            datalist = new Datalist();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            candidateForm = new CandidateForm(datalist);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        layout.addComponent(datalist);
+        updateList();
         
         setContent(layout);
     }
@@ -43,5 +58,10 @@ public class MyUI extends UI {
     @WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
     @VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
     public static class MyUIServlet extends VaadinServlet {
+    }
+
+    public void updateList() {
+        ArrayList<Candidate> candidateList = service.findAll();
+        datalist.updateList(candidateList);
     }
 }
