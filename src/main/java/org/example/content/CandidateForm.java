@@ -9,17 +9,19 @@ import org.example.entities.CandidateStatus;
 import org.example.service.CandidateService;
 
 import java.io.IOException;
+import java.util.spi.CalendarDataProvider;
 
 
 public class CandidateForm extends FormLayout {
-
+    private TextField id = new TextField("id");
     private TextField firstName = new TextField("Vorname");
     private TextField lastName = new TextField("Nachname");
     private TextField email = new TextField("Email");
     private NativeSelect<CandidateStatus> status = new NativeSelect<>("Zustand");
-    private DateField birthdate = new DateField("Geburtsdatum");
+    private DateField birthDate = new DateField("Geburtsdatum");
+
     private Button save = new Button("Speichern");
-    private Button delete = new Button("Abbrechen");
+    private Button delete = new Button("Löschen");
 
     private Candidate candidate;
     private Binder<Candidate> binder = new Binder<>(Candidate.class);
@@ -30,7 +32,7 @@ public class CandidateForm extends FormLayout {
         //this.setRequiredField(newCandidate);
         this.listView = datalist;
         HorizontalLayout buttons = new HorizontalLayout(save,delete);
-        addComponents(firstName,lastName,email,status,birthdate,buttons);
+        addComponents(id,firstName,lastName,email,status,birthDate,buttons);
         status.setItems(CandidateStatus.values());
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -54,25 +56,39 @@ public class CandidateForm extends FormLayout {
 
     }
 
-    public void setCandidate(Candidate candidate) {
-        this.candidate = candidate;
-        binder.setBean(candidate);
 
+    public void setCandidate(Candidate candidate) {
         //show delete button for only candidate already in the database
-        delete.setVisible(candidate.isPersisted());
+        if(candidate == null){
+            delete.setVisible(false);
+            this.candidate = new Candidate();
+        }
+
+        else {
+            delete.setVisible(this.candidate.isPersisted());
+            this.candidate = candidate;
+        }
+        binder.setBean(this.candidate);
         setVisible(true);
         firstName.selectAll();
     }
 
     private void delete() throws IOException {
+        candidate = binder.getBean();
         service.delete(candidate);
-        setVisible(false);
+        this.listView.updateList(service.findAll());
+        setCandidate(null);
+
     }
 
     private void save() throws IOException {
+        candidate = binder.getBean();
+        System.out.println(candidate.getId());
         service.save(candidate);
-        setVisible(false);
-    }
+        this.listView.updateList(service.findAll());
+        setCandidate(null);
+
+}
 
     /*private void setRequiredField(boolean newCandidate) {
         if(newCandidate == false)
