@@ -41,56 +41,25 @@ public class MyUI extends UI {
 
     @Override
     protected void init(VaadinRequest vaadinRequest) {
+
         final VerticalLayout layout = new VerticalLayout();
-
-        Button newbutton = new Button("Neue Bewerber anlegen");
-        /*Button addnewBewerber = new Button("Neue Bewerber anlegen");
-        addnewBewerber.setStyleName(ValoTheme.BUTTON_PRIMARY);
-        addnewBewerber.addClickListener(e -> {
-            if(addnewBewerber.getCaption()=="Neue Bewerber anlegen") {
-                datalist.getGrid().asSingleSelect().clear();
-                candidateForm.setCandidate(new Candidate());
-                addnewBewerber.setCaption("Abbrechen");
-                addnewBewerber.setStyleName(ValoTheme.BUTTON_DANGER);
-            }
-            else {
-                candidateForm.setVisible(false);
-                addnewBewerber.setCaption("Neue Bewerber anlegen");
-                addnewBewerber.setStyleName(ValoTheme.BUTTON_PRIMARY);
-            }
-        });
-
-        HorizontalLayout content = new HorizontalLayout(candidateForm,datalist);
-        content.setSizeFull();
-        //datalist.getGrid().setSizeFull();
-        //content.setExpandRatio(datalist,1);
-        //.setColumns("id","firstName","lastName","birthDate","status");
-        VerticalLayout main = new VerticalLayout(addnewBewerber,content);
-        layout.addComponent(main);
-        //updateList();*/
-
         try {
             datalist = new Datalist();
         } catch (IOException e) {
             e.printStackTrace();
         }
-       /* try {
-            candidateForm = new CandidateForm(datalist);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
 
         candidateForm = datalist.getCandidateForm();
-
         HorizontalLayout hContent = new HorizontalLayout(datalist,candidateForm);
         candidateForm.setCandidate(null);
         candidateForm.setVisible(false);
-        //hContent.setExpandRatio(datalist,1);
-        VerticalLayout vContent = new VerticalLayout(newbutton,hContent);
-        vContent.setSizeFull();
+
+
+
         hContent.setSizeFull();
-        layout.addComponent(vContent);
-        updateList();
+
+        layout.addComponent(hContent);
+        datalist.updateList(service.findAll());
         
         setContent(layout);
     }
@@ -100,8 +69,7 @@ public class MyUI extends UI {
     public static class MyUIServlet extends VaadinServlet {
     }
 
-    public void updateList() {
-        ArrayList<Candidate> candidateList = service.findAll();
-        datalist.updateList(candidateList);
-    }
+
+
+
 }

@@ -4,6 +4,7 @@ import com.vaadin.data.Binder;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.example.MyUI;
 import org.example.entities.Candidate;
 import org.example.entities.CandidateStatus;
 import org.example.service.CandidateService;
@@ -13,7 +14,8 @@ import java.util.spi.CalendarDataProvider;
 
 
 public class CandidateForm extends FormLayout {
-    private TextField id = new TextField("id");
+    private Label label = new Label("Stammdaten");
+    private TextField id = new TextField("Identifikator");
     private TextField firstName = new TextField("Vorname");
     private TextField lastName = new TextField("Nachname");
     private TextField email = new TextField("Email");
@@ -29,10 +31,12 @@ public class CandidateForm extends FormLayout {
     private CandidateService service = CandidateService.getInstance();
 
     public CandidateForm (Datalist datalist) throws IOException {
-        //this.setRequiredField(newCandidate);
+
+        label.setStyleName(ValoTheme.LABEL_H2);
         this.listView = datalist;
+
         HorizontalLayout buttons = new HorizontalLayout(save,delete);
-        addComponents(id,firstName,lastName,email,status,birthDate,buttons);
+        addComponents(label,id,firstName,lastName,email,status,birthDate,buttons);
         status.setItems(CandidateStatus.values());
         save.setStyleName(ValoTheme.BUTTON_PRIMARY);
         save.setClickShortcut(ShortcutAction.KeyCode.ENTER);
@@ -62,22 +66,29 @@ public class CandidateForm extends FormLayout {
         if(candidate == null){
             delete.setVisible(false);
             this.candidate = new Candidate();
+            setVisible(false);
         }
 
         else {
+            id.setEnabled(false);
             delete.setVisible(this.candidate.isPersisted());
             this.candidate = candidate;
+            setVisible(true);
         }
         binder.setBean(this.candidate);
-        setVisible(true);
+
         firstName.selectAll();
     }
+
+
 
     private void delete() throws IOException {
         candidate = binder.getBean();
         service.delete(candidate);
         this.listView.updateList(service.findAll());
         setCandidate(null);
+
+
 
     }
 
@@ -87,12 +98,9 @@ public class CandidateForm extends FormLayout {
         service.save(candidate);
         this.listView.updateList(service.findAll());
         setCandidate(null);
+    }
 
-}
-
-    /*private void setRequiredField(boolean newCandidate) {
-        if(newCandidate == false)
-
-        "Dieses Feld ist obligatorisch"
-    }*/
+    public void setIdEnable(){
+        id.setEnabled(true);
+    }
 }
