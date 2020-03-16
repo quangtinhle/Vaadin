@@ -50,12 +50,23 @@ public class CandidateService implements Serializable {
     }
 
     public void save(Candidate candidate) throws IOException {
+        for (int i = 0; i < candidates.size(); i++) {
+            if(candidate.getId().equals(candidates.get(i).getId())){
+                candidates.set(i,candidate);
+                serializing();
+                return;
+            }
+        }
         candidates.add(candidate);
         serializing();
     }
 
     public void delete(Candidate candidate) throws IOException {
-        candidates.remove(candidate.getId());
+        for (int i = 0; i < candidates.size(); i++) {
+            if(candidate.getId().equals(candidates.get(i).getId())){
+                candidates.remove(candidates.get(i));
+            }
+        }
         serializing();
     }
 
