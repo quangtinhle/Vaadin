@@ -7,8 +7,12 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 
+import com.vaadin.ui.Button;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
+import org.atmosphere.interceptor.AtmosphereResourceStateRecovery;
 import org.example.content.CandidateForm;
 import org.example.content.Datalist;
 import org.example.entities.Candidate;
@@ -39,17 +43,53 @@ public class MyUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
 
+        Button newbutton = new Button("Neue Bewerber anlegen");
+        /*Button addnewBewerber = new Button("Neue Bewerber anlegen");
+        addnewBewerber.setStyleName(ValoTheme.BUTTON_PRIMARY);
+        addnewBewerber.addClickListener(e -> {
+            if(addnewBewerber.getCaption()=="Neue Bewerber anlegen") {
+                datalist.getGrid().asSingleSelect().clear();
+                candidateForm.setCandidate(new Candidate());
+                addnewBewerber.setCaption("Abbrechen");
+                addnewBewerber.setStyleName(ValoTheme.BUTTON_DANGER);
+            }
+            else {
+                candidateForm.setVisible(false);
+                addnewBewerber.setCaption("Neue Bewerber anlegen");
+                addnewBewerber.setStyleName(ValoTheme.BUTTON_PRIMARY);
+            }
+        });
+
+        HorizontalLayout content = new HorizontalLayout(candidateForm,datalist);
+        content.setSizeFull();
+        //datalist.getGrid().setSizeFull();
+        //content.setExpandRatio(datalist,1);
+        //.setColumns("id","firstName","lastName","birthDate","status");
+        VerticalLayout main = new VerticalLayout(addnewBewerber,content);
+        layout.addComponent(main);
+        //updateList();*/
+
         try {
             datalist = new Datalist();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try {
+       /* try {
             candidateForm = new CandidateForm(datalist);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        layout.addComponent(datalist);
+        }*/
+
+        candidateForm = datalist.getCandidateForm();
+
+        HorizontalLayout hContent = new HorizontalLayout(datalist,candidateForm);
+        candidateForm.setCandidate(null);
+        candidateForm.setVisible(false);
+        //hContent.setExpandRatio(datalist,1);
+        VerticalLayout vContent = new VerticalLayout(newbutton,hContent);
+        vContent.setSizeFull();
+        hContent.setSizeFull();
+        layout.addComponent(vContent);
         updateList();
         
         setContent(layout);
